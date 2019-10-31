@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
                 System.out.println("max right");
             }else {
                 System.out.println("right");
-                plane.moveRight(10);
+                plane.moveRight(20);
                 this.drawSlave();
             }
         }else if(roll < -0.35){
@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
                 System.out.println("max left");
             }else {
                 System.out.println("left");
-                plane.moveLeft(10);
+                plane.moveLeft(20);
                 this.drawSlave();
             }
         }else if(roll < 0.35 && roll > 0.35){
