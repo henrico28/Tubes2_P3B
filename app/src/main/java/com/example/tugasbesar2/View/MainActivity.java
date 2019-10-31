@@ -10,6 +10,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -62,21 +63,32 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         //game screen
         this.imageView = findViewById(R.id.game_image_container);
         this.friendly_paint = new Paint();
-        int friendly_color = ResourcesCompat.getColor(getResources(),R.color.blue,null);
-        this.friendly_paint.setColor(friendly_color);
+        this.friendly_paint.setColor(getResources().getColor(R.color.white));
         this.enemy_paint = new Paint();
-        int enemy_color = ResourcesCompat.getColor(getResources(),R.color.red,null);
+        int enemy_color = ResourcesCompat.getColor(getResources(),R.color.green,null);
         this.enemy_paint.setColor(enemy_color);
     }
+
     //game screen (prototype)
+    private int x = 540;//x
+    private int y = 1680;//y
+
     public void initiateCanvas(){
-        System.out.println(this.imageView.getHeight() + " " + this.imageView.getWidth());
         this.mBitmap = Bitmap.createBitmap(this.imageView.getWidth(),this.imageView.getHeight(), Bitmap.Config.ARGB_8888);
         this.imageView.setImageBitmap(this.mBitmap);
         this.mCanvas = new Canvas(this.mBitmap);
-        int mColorBackground = ResourcesCompat.getColor(getResources(),R.color.white,null);
+        int mColorBackground = ResourcesCompat.getColor(getResources(),R.color.black,null);
         this.mCanvas.drawColor(mColorBackground);
-        this.mCanvas.drawRect(1000,1000,1000,1000,this.friendly_paint);
+        this.imageView.invalidate();
+        this.mCanvas.drawCircle(this.x, this.y, 50 , this.friendly_paint);
+    }
+
+    //changes drawing (update draw)
+    public void drawSlave(){
+        this.initiateCanvas();
+
+        this.mCanvas.drawCircle(this.x, this.y, 50 , this.friendly_paint);
+
         this.imageView.invalidate();
     }
 
@@ -116,9 +128,23 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
         //check the phone gyrometer (for movement)
         if(roll > 0.35){
-            System.out.println("right");
+            if(this.x > 1080){
+                System.out.println("max right");
+            }else {
+                System.out.println("right");
+                this.x += 50;
+                System.out.println(this.x + " " + this.y);
+                this.drawSlave();
+            }
         }else if(roll < -0.35){
-            System.out.println("left");
+            if(this.x < 0){
+                System.out.println("max left");
+            }else {
+                System.out.println("left");
+                this.x -= 50;
+                System.out.println(this.x + " " + this.y);
+                this.drawSlave();
+            }
         }else if(roll < 0.35 && roll > 0.35){
             System.out.println("steady");
         }
