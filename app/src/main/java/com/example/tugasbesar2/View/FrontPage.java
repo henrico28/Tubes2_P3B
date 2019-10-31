@@ -38,6 +38,10 @@ public class FrontPage extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         if(view.getId() == this.btnStart.getId()){
             this.listener.closePage();
+
+            //start game + engage sensors
+            MainActivity main = (MainActivity)getActivity();
+            main.engageSensors();
         }
     }
 
