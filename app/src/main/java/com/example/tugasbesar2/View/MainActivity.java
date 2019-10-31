@@ -19,14 +19,17 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.tugasbesar2.Model.Plane;
 import com.example.tugasbesar2.Presenter.Presenter;
 import com.example.tugasbesar2.R;
 
-public class MainActivity extends AppCompatActivity implements FragmentListener, SensorEventListener {
+public class MainActivity extends AppCompatActivity implements FragmentListener, SensorEventListener, View.OnClickListener {
     //fragment : FrontPage
     protected FrontPage fp;
     protected FragmentManager fragmentManager;
@@ -52,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     protected Paint friendly_paint;
     protected Paint enemy_paint;
 
+    //button
+    protected Button btn_mode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
         //sensors
         this.mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
         this.accelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.magnetometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
@@ -80,7 +85,62 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.enemy_paint = new Paint();
         int enemy_color = ResourcesCompat.getColor(getResources(),R.color.green,null);
         this.enemy_paint.setColor(enemy_color);
+
+        //btn
+        this.btn_mode = findViewById(R.id.btn_mode);
+        this.btn_mode.setVisibility(View.GONE);
+        this.btn_mode.setOnClickListener(this);
     }
+
+    @Override
+    public void onClick(View view) {
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+
+        if(view.getId() == this.btn_mode.getId()){
+            if(this.btn_mode.getText().toString().equalsIgnoreCase("buttons")) {
+                this.btn_mode.setText(R.string.modeGyro);
+                deactivateButtons();
+                activateGyro();
+                //show toast
+                Toast toast = Toast.makeText(context, "Gyro Mode Activated", duration);
+                toast.show();
+            }else{
+                this.btn_mode.setText(R.string.modeButton);
+                deactivateGyro();
+                activateButtons();
+                //show toast
+                Toast toast = Toast.makeText(context, "Button Mode Activated", duration);
+                toast.show();
+            }
+        }
+    }
+
+    //game button or gyro
+    private void activateButtons(){
+        //do smth
+    }
+
+    private void deactivateButtons(){
+        //do smth
+    }
+
+    private void activateGyro(){
+        if(this.accelerometer != null){
+            this.mSensorManager.registerListener(this,this.accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
+            Log.d("accel","registered!");
+        }
+        if(this.magnetometer != null){
+            this.mSensorManager.registerListener(this,this.magnetometer,SensorManager.SENSOR_DELAY_NORMAL);
+            Log.d("magnet","registered!");
+        }
+    }
+
+    private void deactivateGyro(){
+        this.mSensorManager.unregisterListener(this);
+    }
+
+
 
     //game screen (prototype)
     private Bitmap a10;
@@ -165,15 +225,8 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
     protected void engageSensors(){
         //registering sensor on start fragment "FrontPage" + engage canvas (prototype)
-        if(this.accelerometer != null){
-            this.mSensorManager.registerListener(this,this.accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
-            Log.d("accel","registered!");
-        }
-        if(this.magnetometer != null){
-            this.mSensorManager.registerListener(this,this.magnetometer,SensorManager.SENSOR_DELAY_NORMAL);
-            Log.d("magnet","registered!");
-        }
-
+        this.btn_mode.setVisibility(View.VISIBLE);
+        this.activateGyro(); //NANTI AKAN DIGANTI OLEH BUTTON SEMENTARA DL AJA AJG
         this.initiateCanvas();
     }
 
@@ -197,19 +250,18 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     @Override
     protected void onResume() {
         super.onResume();
-        if(this.accelerometer != null){
-            this.mSensorManager.registerListener(this,this.accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
-            Log.d("accel","registered!");
-        }
-        if(this.magnetometer != null){
-            this.mSensorManager.registerListener(this,this.magnetometer,SensorManager.SENSOR_DELAY_NORMAL);
-            Log.d("magnet","registered!");
+        if(this.btn_mode.getText().toString().equalsIgnoreCase("button")){
+            this.activateButtons();
+        }else {
+            this.activateGyro();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        this.mSensorManager.unregisterListener(this);
+        if(this.btn_mode.getText().toString().equalsIgnoreCase("gyro")){
+            this.deactivateGyro();
+        }
     }
 }

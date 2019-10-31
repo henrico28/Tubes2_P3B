@@ -14,7 +14,6 @@ import com.example.tugasbesar2.R;
 public class FrontPage extends Fragment implements View.OnClickListener {
     protected Button btnStart;
     protected FragmentListener listener;
-
     public FrontPage(){
 
     }
