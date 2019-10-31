@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.example.tugasbesar2.Model.Plane;
 import com.example.tugasbesar2.Presenter.Presenter;
 import com.example.tugasbesar2.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity implements FragmentListener, SensorEventListener, View.OnClickListener {
     //fragment : FrontPage
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
     //button
     protected Button btn_mode;
+    protected FloatingActionButton fab_left;
+    protected FloatingActionButton fab_right;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +91,14 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
         //btn
         this.btn_mode = findViewById(R.id.btn_mode);
+        this.fab_left = findViewById(R.id.fab_left);
+        this.fab_right = findViewById(R.id.fab_right);
+
         this.btn_mode.setVisibility(View.GONE);
+
         this.btn_mode.setOnClickListener(this);
+        this.fab_left.setOnClickListener(this);
+        this.fab_right.setOnClickListener(this);
     }
 
     @Override
