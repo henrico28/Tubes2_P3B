@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     }
     //game screen (prototype)
     public void initiateCanvas(){
+        System.out.println(this.imageView.getHeight() + " " + this.imageView.getWidth());
         this.mBitmap = Bitmap.createBitmap(this.imageView.getWidth(),this.imageView.getHeight(), Bitmap.Config.ARGB_8888);
         this.imageView.setImageBitmap(this.mBitmap);
         this.mCanvas = new Canvas(this.mBitmap);
