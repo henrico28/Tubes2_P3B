@@ -1,4 +1,4 @@
-package com.example.tugasbesar2;
+package com.example.tugasbesar2.View;
 
 public interface FragmentListener {
 
