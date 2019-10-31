@@ -3,4 +3,5 @@
     <string name="start">START</string>
     <string name="modeButton">Buttons</string>
     <string name="modeGyro">Gyro</string>
+    <string name="welcome">WELCOME TO PLANE SHOOTING GAME</string>
 </resources>
