@@ -111,14 +111,14 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
                 this.btn_mode.setText(R.string.modeGyro);
                 deactivateButtons();
                 activateGyro();
-                //show toast
+                //show toast for enabling gyro
                 Toast toast = Toast.makeText(context, "Gyro Mode Activated", duration);
                 toast.show();
             }else{
                 this.btn_mode.setText(R.string.modeButton);
                 deactivateGyro();
                 activateButtons();
-                //show toast
+                //show toast for enabling button
                 Toast toast = Toast.makeText(context, "Button Mode Activated", duration);
                 toast.show();
             }
@@ -127,11 +127,11 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
     //game button or gyro
     private void activateButtons(){
-        //do smth
+        //do activate buttons
     }
 
     private void deactivateButtons(){
-        //do smth
+        //do deactivate buttons
     }
 
     private void activateGyro(){
