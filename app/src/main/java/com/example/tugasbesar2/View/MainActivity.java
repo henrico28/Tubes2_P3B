@@ -1,8 +1,10 @@
-package com.example.tugasbesar2;
+package com.example.tugasbesar2.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.tugasbesar2.R;
 
 public class MainActivity extends AppCompatActivity {
 
