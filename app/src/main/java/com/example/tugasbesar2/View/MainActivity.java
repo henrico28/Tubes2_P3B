@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -21,12 +22,20 @@ import android.util.Log;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
+import com.example.tugasbesar2.Model.Plane;
+import com.example.tugasbesar2.Presenter.Presenter;
 import com.example.tugasbesar2.R;
 
 public class MainActivity extends AppCompatActivity implements FragmentListener, SensorEventListener {
     //fragment : FrontPage
     protected FrontPage fp;
     protected FragmentManager fragmentManager;
+
+    //Presenter
+    protected Presenter presenter;
+
+    //Da Plane
+    private Plane plane;
 
     //Sensors
     protected SensorManager mSensorManager;
@@ -47,6 +56,10 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Presenter
+        this.presenter = new Presenter(this);
+        this.plane = this.presenter.getPlane();
 
         //front page
         this.fp = new FrontPage();
@@ -70,9 +83,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     }
 
     //game screen (prototype)
-    private int x = 540;//x
-    private int y = 1680;//y
-
+    private Bitmap a10;
     public void initiateCanvas(){
         this.mBitmap = Bitmap.createBitmap(this.imageView.getWidth(),this.imageView.getHeight(), Bitmap.Config.ARGB_8888);
         this.imageView.setImageBitmap(this.mBitmap);
@@ -80,14 +91,17 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         int mColorBackground = ResourcesCompat.getColor(getResources(),R.color.black,null);
         this.mCanvas.drawColor(mColorBackground);
         this.imageView.invalidate();
-        this.mCanvas.drawCircle(this.x, this.y, 50 , this.friendly_paint);
+
+        //adding a plane model (A10)
+        this.a10 = BitmapFactory.decodeResource(getResources(), R.drawable.a10);
+        this.mCanvas.drawBitmap(this.a10,plane.getPosX(),plane.getPosY(),new Paint());
     }
 
     //changes drawing (update draw)
     public void drawSlave(){
         this.initiateCanvas();
 
-        this.mCanvas.drawCircle(this.x, this.y, 50 , this.friendly_paint);
+        this.mCanvas.drawBitmap(this.a10,plane.getPosX(),plane.getPosY(),new Paint());
 
         this.imageView.invalidate();
     }
@@ -128,21 +142,19 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
         //check the phone gyrometer (for movement)
         if(roll > 0.35){
-            if(this.x > 1080){
+            if(plane.getPosX() > 920){
                 System.out.println("max right");
             }else {
                 System.out.println("right");
-                this.x += 50;
-                System.out.println(this.x + " " + this.y);
+                plane.moveRight(10);
                 this.drawSlave();
             }
         }else if(roll < -0.35){
-            if(this.x < 0){
+            if(plane.getPosX() < -90){
                 System.out.println("max left");
             }else {
                 System.out.println("left");
-                this.x -= 50;
-                System.out.println(this.x + " " + this.y);
+                plane.moveLeft(10);
                 this.drawSlave();
             }
         }else if(roll < 0.35 && roll > 0.35){
@@ -179,6 +191,25 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     @Override
     protected void onStop() {
         super.onStop();
+        this.mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(this.accelerometer != null){
+            this.mSensorManager.registerListener(this,this.accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
+            Log.d("accel","registered!");
+        }
+        if(this.magnetometer != null){
+            this.mSensorManager.registerListener(this,this.magnetometer,SensorManager.SENSOR_DELAY_NORMAL);
+            Log.d("magnet","registered!");
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         this.mSensorManager.unregisterListener(this);
     }
 }
