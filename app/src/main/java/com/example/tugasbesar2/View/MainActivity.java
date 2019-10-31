@@ -1,29 +1,25 @@
 package com.example.tugasbesar2.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.tugasbesar2.Model.Plane;
 import com.example.tugasbesar2.Presenter.Presenter;
@@ -136,11 +132,21 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
                 toast.show();
             }
         }else if(view.getId() == this.fab_left.getId() && mode){
-                plane.moveLeft(20);
-                this.drawSlave();
+                if (plane.getPosX() < -90) {
+                    System.out.println("max left");
+                } else {
+                    System.out.println("left");
+                    plane.moveLeft(20);
+                    this.drawSlave();
+                }
         }else if(view.getId() == this.fab_right.getId() && mode){
-            plane.moveRight(20);
-            this.drawSlave();
+            if(plane.getPosX() > 920){
+                System.out.println("max right");
+            }else {
+                System.out.println("right");
+                plane.moveRight(20);
+                this.drawSlave();
+            }
         }
     }
 
