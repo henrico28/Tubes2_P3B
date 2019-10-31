@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     //fragment : FrontPage
     protected FrontPage fp;
     protected FragmentManager fragmentManager;
+    protected boolean isStarted;
 
     //Presenter
     protected Presenter presenter;
@@ -60,11 +61,14 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     protected Button btn_mode;
     protected FloatingActionButton fab_left;
     protected FloatingActionButton fab_right;
+    private boolean mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.isStarted = false;
+        this.mode = false; //mode gyro
 
         //Presenter
         this.presenter = new Presenter(this);
@@ -94,7 +98,10 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.fab_left = findViewById(R.id.fab_left);
         this.fab_right = findViewById(R.id.fab_right);
 
+        //menyembunyikan semua button
         this.btn_mode.setVisibility(View.GONE);
+        this.fab_left.hide();
+        this.fab_right.hide();
 
         this.btn_mode.setOnClickListener(this);
         this.fab_left.setOnClickListener(this);
@@ -111,6 +118,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
                 this.btn_mode.setText(R.string.modeGyro);
                 deactivateButtons();
                 activateGyro();
+                //hide button
+                this.fab_left.hide();
+                this.fab_right.hide();
                 //show toast for enabling gyro
                 Toast toast = Toast.makeText(context, "Gyro Mode Activated", duration);
                 toast.show();
@@ -118,20 +128,29 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
                 this.btn_mode.setText(R.string.modeButton);
                 deactivateGyro();
                 activateButtons();
+                //memunculkan button
+                this.fab_left.show();
+                this.fab_right.show();
                 //show toast for enabling button
                 Toast toast = Toast.makeText(context, "Button Mode Activated", duration);
                 toast.show();
             }
+        }else if(view.getId() == this.fab_left.getId() && mode){
+                plane.moveLeft(20);
+                this.drawSlave();
+        }else if(view.getId() == this.fab_right.getId() && mode){
+            plane.moveRight(20);
+            this.drawSlave();
         }
     }
 
     //game button or gyro
     private void activateButtons(){
-        //do activate buttons
+        this.mode = true;
     }
 
     private void deactivateButtons(){
-        //do deactivate buttons
+        this.mode = false;
     }
 
     private void activateGyro(){
@@ -154,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     //game screen (prototype)
     private Bitmap a10;
     public void initiateCanvas(){
+        this.isStarted = true;
         this.mBitmap = Bitmap.createBitmap(this.imageView.getWidth(),this.imageView.getHeight(), Bitmap.Config.ARGB_8888);
         this.imageView.setImageBitmap(this.mBitmap);
         this.mCanvas = new Canvas(this.mBitmap);
@@ -259,10 +279,12 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     @Override
     protected void onResume() {
         super.onResume();
-        if(this.btn_mode.getText().toString().equalsIgnoreCase("button")){
-            this.activateButtons();
-        }else {
-            this.activateGyro();
+        if(isStarted) {
+            if (this.btn_mode.getText().toString().equalsIgnoreCase("button")) {
+                this.activateButtons();
+            } else {
+                this.activateGyro();
+            }
         }
     }
 
