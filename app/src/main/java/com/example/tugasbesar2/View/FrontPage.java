@@ -40,7 +40,7 @@ public class FrontPage extends Fragment implements View.OnClickListener {
 
             //start game + engage sensors
             MainActivity main = (MainActivity)getActivity();
-            main.engageSensors();
+            main.startApp();
         }
     }
 

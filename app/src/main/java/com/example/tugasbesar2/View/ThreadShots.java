@@ -40,17 +40,20 @@ public class ThreadShots implements Runnable{
 
                 int hitBoxXMax = 0;
                 int hitBoxXMin = 0;
-                int hitBoxY = 0;
+                int hitBoxYBawah = 0;
+                int hitBoxYAtas = 0;
                 //if it hits enemies and penetrates the enemy
                 for(int i = 0 ; i < this.enemies.size() ; i++){
                     //create hitbox
                     hitBoxXMax = this.enemies.get(i).getPosX() + 50;
                     hitBoxXMin = this.enemies.get(i).getPosX() - 50;
-                    hitBoxY = this.enemies.get(i).getPosY()+25;
-                    if(curX >= hitBoxXMin && curX <=hitBoxXMax && curY<=hitBoxY){
+                    hitBoxYBawah = this.enemies.get(i).getPosY()+50;
+                    hitBoxYAtas = this.enemies.get(i).getPosY()-50;
+                    if(curX >= hitBoxXMin && curX <=hitBoxXMax && curY<=hitBoxYBawah && curY>=hitBoxYAtas){
                         //tambah API untuk POINT
                         this.enemies.get(i).setDead(true);
                         curY = -100;
+
                     }
                 }
                 this.uiThreadedWrapper.x(new Shot(curX, curY));

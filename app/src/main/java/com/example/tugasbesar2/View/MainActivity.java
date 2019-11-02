@@ -11,6 +11,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -84,6 +85,10 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     //Timer
     protected TextView timer;
 
+    //Points
+    private int point;
+    protected TextView tv_point;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +131,12 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.fab_left = findViewById(R.id.fab_left);
         this.fab_right = findViewById(R.id.fab_right);
 
+        //Points
+        this.point = 0;
+        this.tv_point = findViewById(R.id.tv_point);
+        this.tv_point.setText(R.string.initialPoint);
+
+
         //Enemies
 //        this.enemies = new Enemy[5];
         this.enemies = new LinkedList<Enemy>();
@@ -140,11 +151,13 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         //menyembunyikan semua button
         this.btn_mode.setVisibility(View.GONE);
         this.timer.setVisibility(View.GONE);
+        this.tv_point.setVisibility(View.GONE);
         this.fab_left.hide();
         this.fab_right.hide();
 
         //Thread Wrapper
         this.uiThreadedWrapper = new UIThreadedWrapper(this);
+
 
 
         this.btn_mode.setOnClickListener(this);
@@ -297,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.mCanvas.drawCircle(shot.getPosX(), shot.getPosY(), 20, this.shot_paint );
         for(int i = 0 ; i < this.enemies.size() ; i++){
             if(this.enemies.get(i).isDead()){
-//                this.mCanvas.drawCircle(this.enemies[i].getPosX(), this.enemies[i].getPosY(), 50, this.dead_paint );
+                this.enemyKilled();
                 this.enemies.remove(i);
                 this.drawMoreEnemy();
             }
@@ -313,6 +326,17 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
     public void setTimerText(String string){
         this.timer.setText(string);
+    }
+
+    //Point
+    public void enemyKilled(){
+        this.point+=1;
+        this.updatePoint();
+    }
+
+    public void updatePoint(){
+        String string = "Score : "+this.point;
+        this.tv_point.setText(string);
     }
 
     @Override
@@ -371,17 +395,39 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         }
     }
 
+    //TIMER
+    public void createTimer(){
+        new CountDownTimer(30000, 1000) {
 
-    protected void engageSensors(){
+            public void onTick(long millisUntilFinished) {
+                setTimer(millisUntilFinished/1000);
+            }
+
+            public void onFinish() {
+                setTimerText("TIME'S UP!");
+                stopGame();
+            }
+        }.start();
+    }
+
+    public void stopGame(){
+
+    }
+
+    protected void startApp(){
         //registering sensor on start fragment "FrontPage" + engage canvas (prototype)
         this.btn_mode.setVisibility(View.VISIBLE);
         this.timer.setVisibility(View.VISIBLE);
+        this.tv_point.setVisibility(View.VISIBLE);
+        this.tv_point.bringToFront();
+        this.timer.bringToFront();
         this.activateGyro(); //NANTI AKAN DIGANTI OLEH BUTTON SEMENTARA DL AJA AJG
         this.initiateEnemy();
         this.initiateCanvas();
 
         ThreadShots ts = new ThreadShots(uiThreadedWrapper,this.shot,this.plane,this.enemies);
         ts.initiate();
+        this.createTimer();
     }
 
     @Override
