@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.friendly_paint = new Paint();
         this.friendly_paint.setColor(getResources().getColor(R.color.white));
         this.enemy_paint = new Paint();
-        int enemy_color = ResourcesCompat.getColor(getResources(),R.color.green,null);
+        int enemy_color = ResourcesCompat.getColor(getResources(),R.color.red,null);
         this.enemy_paint.setColor(enemy_color);
 
         //btn
@@ -222,7 +222,15 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         int boundaryY = (int)((75.0/100.0) * this.imageView.getHeight());
         for(int i =0;i<10;i++){
             int x = rand.nextInt(this.imageView.getWidth());
+            if(x < 100){
+                x+= 100;
+            }else if(x >= 980){
+                x-= 100;
+            }
             int y = rand.nextInt(boundaryY)+50;
+            if(y <= 100){
+                y+= 300;
+            }
             this.enemies[i] = new Enemy(x, y);
             this.mCanvas.drawCircle(x, y, 50, enemy_paint);
         }
