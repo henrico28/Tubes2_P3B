@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,8 @@ import com.example.tugasbesar2.Presenter.Presenter;
 import com.example.tugasbesar2.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -68,14 +71,18 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     private boolean mode;
 
     //Enemy
-    protected Enemy[] enemies;
-
+//    protected Enemy[] enemies;
+    protected List<Enemy> enemies;
     //Flag (Buat nandain enemy udah dibuat)
+    private int enemyCounter;
     protected boolean flag;
 
     //Thread Wrapper and shot
     protected UIThreadedWrapper uiThreadedWrapper;
     protected Shot shot;
+
+    //Timer
+    protected TextView timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,17 +127,25 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.fab_right = findViewById(R.id.fab_right);
 
         //Enemies
-        this.enemies = new Enemy[5];
+//        this.enemies = new Enemy[5];
+        this.enemies = new LinkedList<Enemy>();
         this.flag = false;
+        //Jumlah Musuh
+        this.enemyCounter = 10;
 
+
+        //Timer
+        this.timer = findViewById(R.id.tv_timer);
 
         //menyembunyikan semua button
         this.btn_mode.setVisibility(View.GONE);
+        this.timer.setVisibility(View.GONE);
         this.fab_left.hide();
         this.fab_right.hide();
 
         //Thread Wrapper
         this.uiThreadedWrapper = new UIThreadedWrapper(this);
+
 
         this.btn_mode.setOnClickListener(this);
         this.fab_left.setOnClickListener(this);
@@ -227,8 +242,8 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
         //draw Enemy
         if(flag){
-            for(int i =0;i<this.enemies.length;i++){
-                this.mCanvas.drawCircle(this.enemies[i].getPosX(), this.enemies[i].getPosY(), 50, enemy_paint);
+            for(int i =0;i<this.enemies.size();i++){
+                this.mCanvas.drawCircle(this.enemies.get(i).getPosX(), this.enemies.get(i).getPosY(), 50, enemy_paint);
             }
         }
     }
@@ -239,19 +254,36 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         flag = true;
         Random rand = new Random();
         int boundaryY = (int)((75.0/100.0) * this.imageView.getHeight());
-        for(int i =0;i<this.enemies.length;i++){
-            int x = rand.nextInt(this.imageView.getWidth());
-            if(x < 100){
-                x+= 100;
-            }else if(x >= 980){
-                x-= 100;
+        //Kalau pertama kali game dijalankan membuat musuh sebanyak enemyCounter
+            for (int i = 0; i < this.enemyCounter; i++) {
+                int x = rand.nextInt(this.imageView.getWidth());
+                if (x < 100) {
+                    x += 100;
+                } else if (x >= 980) {
+                    x -= 100;
+                }
+                int y = rand.nextInt(boundaryY) + 50;
+                if (y <= 100) {
+                    y += 300;
+                }
+                this.enemies.add(new Enemy(x, y));
             }
-            int y = rand.nextInt(boundaryY)+50;
-            if(y <= 100){
-                y+= 300;
-            }
-            this.enemies[i] = new Enemy(x, y);
+    }
+
+    public void drawMoreEnemy(){
+        Random rand = new Random();
+        int boundaryY = (int)((75.0/100.0) * this.imageView.getHeight());
+        int x = rand.nextInt(this.imageView.getWidth());
+        if (x < 100) {
+            x += 100;
+        } else if (x >= 980) {
+            x -= 100;
         }
+        int y = rand.nextInt(boundaryY) + 50;
+        if (y <= 100) {
+            y += 300;
+        }
+        this.enemies.add(new Enemy(x, y));
     }
 
     //changes drawing (update draw)
@@ -263,12 +295,24 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
     protected void shoot(Shot shot){
         this.mCanvas.drawCircle(shot.getPosX(), shot.getPosY(), 20, this.shot_paint );
-        for(int i = 0 ; i < this.enemies.length ; i++){
-            if(this.enemies[i].isDead() == true){
-                this.mCanvas.drawCircle(this.enemies[i].getPosX(), this.enemies[i].getPosY(), 50, this.dead_paint );
+        for(int i = 0 ; i < this.enemies.size() ; i++){
+            if(this.enemies.get(i).isDead()){
+//                this.mCanvas.drawCircle(this.enemies[i].getPosX(), this.enemies[i].getPosY(), 50, this.dead_paint );
+                this.enemies.remove(i);
+                this.drawMoreEnemy();
             }
         }
         this.imageView.invalidate();
+    }
+
+    //Timer
+    public void setTimer(long time){
+        String x = "Time Left: "+time;
+        this.timer.setText(x);
+    }
+
+    public void setTimerText(String string){
+        this.timer.setText(string);
     }
 
     @Override
@@ -331,9 +375,10 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     protected void engageSensors(){
         //registering sensor on start fragment "FrontPage" + engage canvas (prototype)
         this.btn_mode.setVisibility(View.VISIBLE);
+        this.timer.setVisibility(View.VISIBLE);
         this.activateGyro(); //NANTI AKAN DIGANTI OLEH BUTTON SEMENTARA DL AJA AJG
-        this.initiateCanvas();
         this.initiateEnemy();
+        this.initiateCanvas();
 
         ThreadShots ts = new ThreadShots(uiThreadedWrapper,this.shot,this.plane,this.enemies);
         ts.initiate();

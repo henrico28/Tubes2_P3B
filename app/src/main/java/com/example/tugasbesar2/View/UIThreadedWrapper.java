@@ -1,5 +1,6 @@
 package com.example.tugasbesar2.View;
 
+import android.os.CountDownTimer;
 import android.os.Message;
 
 import android.os.Handler;
@@ -19,6 +20,18 @@ public class UIThreadedWrapper extends Handler {
         if(msg.what==UIThreadedWrapper.MSG_SET_OUTPUT){
             Shot shot =  (Shot) msg.obj;
             this.mainActivity.shot = shot;
+            new CountDownTimer(30000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    mainActivity.setTimer(millisUntilFinished/1000);
+//                    mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
+                }
+
+                public void onFinish() {
+                    mainActivity.setTimerText("TIME'S UP!");
+//                    mTextField.setText("done!");
+                }
+            }.start();
             this.mainActivity.drawSlave();
         }
     }

@@ -4,15 +4,17 @@ import com.example.tugasbesar2.Model.Enemy;
 import com.example.tugasbesar2.Model.Plane;
 import com.example.tugasbesar2.Model.Shot;
 
+import java.util.List;
+
 public class ThreadShots implements Runnable{
     protected Thread thread;
     protected UIThreadedWrapper uiThreadedWrapper;
     protected Shot shot;
     protected Plane plane;
-    protected Enemy[] enemies;
+    protected List<Enemy> enemies;
 
 
-    public ThreadShots(UIThreadedWrapper uiThreadedWrapper, Shot shot, Plane plane, Enemy[] enemies){
+    public ThreadShots(UIThreadedWrapper uiThreadedWrapper, Shot shot, Plane plane, List<Enemy> enemies){
         this.uiThreadedWrapper = uiThreadedWrapper;
         this.thread = new Thread(this);
         this.shot = shot;
@@ -25,6 +27,7 @@ public class ThreadShots implements Runnable{
         //single shot only
         int curX = shot.getPosX() + 130;
         int curY = shot.getPosY();
+        System.out.println(this.enemies.size());
         while(true){
             if(curY > 0) {
                 //kalau peluru belum keluar map
@@ -39,14 +42,14 @@ public class ThreadShots implements Runnable{
                 int hitBoxXMin = 0;
                 int hitBoxY = 0;
                 //if it hits enemies and penetrates the enemy
-                for(int i = 0 ; i < this.enemies.length ; i++){
+                for(int i = 0 ; i < this.enemies.size() ; i++){
                     //create hitbox
-                    hitBoxXMax = this.enemies[i].getPosX() + 50;
-                    hitBoxXMin = this.enemies[i].getPosX() - 50;
-                    hitBoxY = this.enemies[i].getPosY()+25;
+                    hitBoxXMax = this.enemies.get(i).getPosX() + 50;
+                    hitBoxXMin = this.enemies.get(i).getPosX() - 50;
+                    hitBoxY = this.enemies.get(i).getPosY()+25;
                     if(curX >= hitBoxXMin && curX <=hitBoxXMax && curY<=hitBoxY){
                         //tambah API untuk POINT
-                        this.enemies[i].setDead(true);
+                        this.enemies.get(i).setDead(true);
                         curY = -100;
                     }
                 }
