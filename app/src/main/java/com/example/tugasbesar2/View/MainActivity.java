@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -23,6 +24,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.tugasbesar2.Model.Enemy;
 import com.example.tugasbesar2.Model.Plane;
+import com.example.tugasbesar2.Model.Shot;
 import com.example.tugasbesar2.Presenter.Presenter;
 import com.example.tugasbesar2.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     protected Bitmap mBitmap;
     protected Paint friendly_paint;
     protected Paint enemy_paint;
+    protected Paint shot_paint;
 
     //button
     protected Button btn_mode;
@@ -67,6 +70,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
     //Flag (Buat nandain enemy udah dibuat)
     protected boolean flag;
+
+    //Thread Wrapper
+    protected UIThreadedWrapper uiThreadedWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +103,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.enemy_paint = new Paint();
         int enemy_color = ResourcesCompat.getColor(getResources(),R.color.red,null);
         this.enemy_paint.setColor(enemy_color);
+        this.shot_paint = new Paint();
+        int shot_color = ResourcesCompat.getColor(getResources(),R.color.red,null);
+        this.shot_paint.setColor(shot_color);
 
         //btn
         this.btn_mode = findViewById(R.id.btn_mode);
@@ -112,6 +121,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.btn_mode.setVisibility(View.GONE);
         this.fab_left.hide();
         this.fab_right.hide();
+
+        //Thread Wrapper
+        this.uiThreadedWrapper = new UIThreadedWrapper(this);
 
         this.btn_mode.setOnClickListener(this);
         this.fab_left.setOnClickListener(this);
@@ -232,7 +244,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
                 y+= 300;
             }
             this.enemies[i] = new Enemy(x, y);
-            this.mCanvas.drawCircle(x, y, 50, enemy_paint);
         }
     }
 
@@ -308,6 +319,8 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.activateGyro(); //NANTI AKAN DIGANTI OLEH BUTTON SEMENTARA DL AJA AJG
         this.initiateCanvas();
         this.initiateEnemy();
+        ThreadShots ts = new ThreadShots(uiThreadedWrapper, plane);
+        ts.initiate();
     }
 
     @Override
@@ -344,5 +357,11 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         if(this.btn_mode.getText().toString().equalsIgnoreCase("gyro")){
             this.deactivateGyro();
         }
+    }
+
+    protected void shoot(Shot shot){
+        initiateCanvas();
+        this.mCanvas.drawCircle(shot.getPosX(), shot.getPosY(), 20, this.shot_paint );
+        this.imageView.invalidate();
     }
 }
