@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -34,7 +33,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements FragmentListener, SensorEventListener, View.OnClickListener {
     //fragment : FrontPage
@@ -63,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     protected Paint friendly_paint;
     protected Paint enemy_paint;
     protected Paint shot_paint;
-    protected Paint dead_paint;
 
     //button
     protected Button btn_mode;
@@ -72,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     private boolean mode;
 
     //Enemy
-//    protected Enemy[] enemies;
     protected List<Enemy> enemies;
     //Flag (Buat nandain enemy udah dibuat)
     private int enemyCounter;
@@ -122,9 +118,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.shot_paint = new Paint();
         int shot_color = ResourcesCompat.getColor(getResources(),R.color.white,null);
         this.shot_paint.setColor(shot_color);
-        this.dead_paint = new Paint();
-        int dead_color = getResources().getColor(R.color.red);
-        this.dead_paint.setColor(dead_color);
 
         //btn
         this.btn_mode = findViewById(R.id.btn_mode);
@@ -138,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
 
         //Enemies
-//        this.enemies = new Enemy[5];
         this.enemies = new LinkedList<Enemy>();
         this.flag = false;
         //Jumlah Musuh
@@ -245,7 +237,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.imageView.setImageBitmap(this.mBitmap);
         this.mCanvas = new Canvas(this.mBitmap);
         int mColorBackground = ResourcesCompat.getColor(getResources(),R.color.black,null);
-        int white = ResourcesCompat.getColor(getResources(), R.color.white, null);
         this.mCanvas.drawColor(mColorBackground);
         this.imageView.invalidate();
 
