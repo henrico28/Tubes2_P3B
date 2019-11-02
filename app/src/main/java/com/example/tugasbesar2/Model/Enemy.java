@@ -1,34 +1,31 @@
 package com.example.tugasbesar2.Model;
 
 public class Enemy {
-    private float posX;
-    private float posY;
+    private int posX;
+    private int posY;
 
-    //hitboxes
-    private float hitBox;
-
-    //is it dead?
+    //you ded?
     private boolean dead;
 
-    public Enemy(float x, float y){
+    public Enemy(int x, int y){
         this.posX = x;
         this.posY = y;
         this.dead = false;
     }
 
-    void moveHorizontal(float x){
+    void moveHorizontal(int x){
         this.posX = x;
     }
 
-    void moveVertical(float y){
+    void moveVertical(int y){
         this.posY = y;
     }
 
-    public float getPosX(){
+    public int getPosX(){
         return this.posX;
     }
 
-    public float getPosY(){
+    public int getPosY(){
         return this.posY;
     }
 
@@ -38,9 +35,5 @@ public class Enemy {
 
     public void setDead(boolean dead){
         this.dead = dead;
-    }
-
-    public float getHitBox() {
-        return hitBox;
     }
 }

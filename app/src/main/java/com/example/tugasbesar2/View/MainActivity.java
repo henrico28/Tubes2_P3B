@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     protected Paint friendly_paint;
     protected Paint enemy_paint;
     protected Paint shot_paint;
+    protected Paint dead_paint;
 
     //button
     protected Button btn_mode;
@@ -104,11 +105,14 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.friendly_paint = new Paint();
         this.friendly_paint.setColor(getResources().getColor(R.color.white));
         this.enemy_paint = new Paint();
-        int enemy_color = ResourcesCompat.getColor(getResources(),R.color.purple,null);
+        int enemy_color = getResources().getColor(R.color.green);
         this.enemy_paint.setColor(enemy_color);
         this.shot_paint = new Paint();
-        int shot_color = ResourcesCompat.getColor(getResources(),R.color.red,null);
+        int shot_color = ResourcesCompat.getColor(getResources(),R.color.white,null);
         this.shot_paint.setColor(shot_color);
+        this.dead_paint = new Paint();
+        int dead_color = getResources().getColor(R.color.red);
+        this.dead_paint.setColor(dead_color);
 
         //btn
         this.btn_mode = findViewById(R.id.btn_mode);
@@ -116,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.fab_right = findViewById(R.id.fab_right);
 
         //Enemies
-        this.enemies = new Enemy[10];
+        this.enemies = new Enemy[5];
         this.flag = false;
 
 
@@ -235,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         flag = true;
         Random rand = new Random();
         int boundaryY = (int)((75.0/100.0) * this.imageView.getHeight());
-        for(int i =0;i<10;i++){
+        for(int i =0;i<this.enemies.length;i++){
             int x = rand.nextInt(this.imageView.getWidth());
             if(x < 100){
                 x+= 100;
@@ -259,6 +263,11 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
     protected void shoot(Shot shot){
         this.mCanvas.drawCircle(shot.getPosX(), shot.getPosY(), 20, this.shot_paint );
+        for(int i = 0 ; i < this.enemies.length ; i++){
+            if(this.enemies[i].isDead() == true){
+                this.mCanvas.drawCircle(this.enemies[i].getPosX(), this.enemies[i].getPosY(), 50, this.dead_paint );
+            }
+        }
         this.imageView.invalidate();
     }
 
@@ -326,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.initiateCanvas();
         this.initiateEnemy();
 
-        ThreadShots ts = new ThreadShots(uiThreadedWrapper,this.shot,this.plane);
+        ThreadShots ts = new ThreadShots(uiThreadedWrapper,this.shot,this.plane,this.enemies);
         ts.initiate();
     }
 
