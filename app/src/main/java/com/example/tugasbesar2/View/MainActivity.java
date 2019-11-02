@@ -21,10 +21,13 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.tugasbesar2.Model.Enemy;
 import com.example.tugasbesar2.Model.Plane;
 import com.example.tugasbesar2.Presenter.Presenter;
 import com.example.tugasbesar2.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements FragmentListener, SensorEventListener, View.OnClickListener {
     //fragment : FrontPage
@@ -58,6 +61,12 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     protected FloatingActionButton fab_left;
     protected FloatingActionButton fab_right;
     private boolean mode;
+
+    //Enemy
+    protected Enemy[] enemies;
+
+    //Flag (Buat nandain enemy udah dibuat)
+    protected boolean flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +102,11 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.btn_mode = findViewById(R.id.btn_mode);
         this.fab_left = findViewById(R.id.fab_left);
         this.fab_right = findViewById(R.id.fab_right);
+
+        //Enemies
+        this.enemies = new Enemy[10];
+        this.flag = false;
+
 
         //menyembunyikan semua button
         this.btn_mode.setVisibility(View.GONE);
@@ -184,12 +198,34 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.imageView.setImageBitmap(this.mBitmap);
         this.mCanvas = new Canvas(this.mBitmap);
         int mColorBackground = ResourcesCompat.getColor(getResources(),R.color.black,null);
+        int white = ResourcesCompat.getColor(getResources(), R.color.white, null);
         this.mCanvas.drawColor(mColorBackground);
         this.imageView.invalidate();
 
         //adding a plane model (A10)
         this.a10 = BitmapFactory.decodeResource(getResources(), R.drawable.a10);
         this.mCanvas.drawBitmap(this.a10,plane.getPosX(),plane.getPosY(),new Paint());
+
+        //draw Enemy
+        if(flag){
+            for(int i =0;i<this.enemies.length;i++){
+                this.mCanvas.drawCircle(this.enemies[i].getPosX(), this.enemies[i].getPosY(), 50, enemy_paint);
+            }
+        }
+    }
+
+    //Initiate Enemy
+    public void initiateEnemy(){
+        //adding enemy
+        flag = true;
+        Random rand = new Random();
+        int boundaryY = (int)((75.0/100.0) * this.imageView.getHeight());
+        for(int i =0;i<10;i++){
+            int x = rand.nextInt(this.imageView.getWidth());
+            int y = rand.nextInt(boundaryY)+50;
+            this.enemies[i] = new Enemy(x, y);
+            this.mCanvas.drawCircle(x, y, 50, enemy_paint);
+        }
     }
 
     //changes drawing (update draw)
@@ -263,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.btn_mode.setVisibility(View.VISIBLE);
         this.activateGyro(); //NANTI AKAN DIGANTI OLEH BUTTON SEMENTARA DL AJA AJG
         this.initiateCanvas();
+        this.initiateEnemy();
     }
 
     @Override
@@ -293,7 +330,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
             }
         }
     }
-
     @Override
     protected void onPause() {
         super.onPause();
