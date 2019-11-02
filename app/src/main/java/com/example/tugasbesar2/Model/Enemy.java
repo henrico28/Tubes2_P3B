@@ -3,6 +3,11 @@ package com.example.tugasbesar2.Model;
 public class Enemy {
     private float posX;
     private float posY;
+
+    //hitboxes
+    private float hitBox;
+
+    //is it dead?
     private boolean dead;
 
     public Enemy(float x, float y){
@@ -33,5 +38,9 @@ public class Enemy {
 
     public void setDead(boolean dead){
         this.dead = dead;
+    }
+
+    public float getHitBox() {
+        return hitBox;
     }
 }

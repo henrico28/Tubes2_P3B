@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         if(isStarted) {
             if (this.btn_mode.getText().toString().equalsIgnoreCase("button")) {
                 this.activateButtons();
-            } else {
+            } else if(this.btn_mode.getText().toString().equalsIgnoreCase("gyro")) {
                 this.activateGyro();
             }
         }
