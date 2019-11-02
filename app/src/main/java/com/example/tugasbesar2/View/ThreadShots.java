@@ -6,28 +6,43 @@ import com.example.tugasbesar2.Model.Shot;
 public class ThreadShots implements Runnable{
     protected Thread thread;
     protected UIThreadedWrapper uiThreadedWrapper;
+    protected Shot shot;
     protected Plane plane;
 
 
-    public ThreadShots(UIThreadedWrapper uiThreadedWrapper, Plane plane){
+    public ThreadShots(UIThreadedWrapper uiThreadedWrapper, Shot shot, Plane plane){
         this.uiThreadedWrapper = uiThreadedWrapper;
-        this.plane = plane;
         this.thread = new Thread(this);
+        this.shot = shot;
+        this.plane = plane;
     }
 
     @Override
     public void run() {
-        System.out.println("hai");
-        int curX = plane.getPosX();
-        int curY = plane.getPosY();
+        //single shot only
+        int curX = shot.getPosX() + 130;
+        int curY = shot.getPosY();
         while(true){
-            curY-=10;
-            try{
-                Thread.sleep(100);
-            }catch (InterruptedException e){
-                e.printStackTrace();
+            if(curY > 0) {
+                //kalau peluru belum keluar map
+                curY -= 30;
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                this.uiThreadedWrapper.x(new Shot(curX, curY));
+            }else{
+                //kalau peluru di reload animation
+                curX = plane.getPosX()+130;
+                curY = plane.getPosY();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                this.uiThreadedWrapper.x(new Shot(curX, curY));
             }
-            this.uiThreadedWrapper.x(new Shot(curX, curY));
         }
     }
 

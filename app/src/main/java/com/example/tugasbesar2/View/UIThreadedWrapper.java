@@ -18,7 +18,8 @@ public class UIThreadedWrapper extends Handler {
     public void handleMessage(Message msg){
         if(msg.what==UIThreadedWrapper.MSG_SET_OUTPUT){
             Shot shot =  (Shot) msg.obj;
-            this.mainActivity.shoot(shot);
+            this.mainActivity.shot = shot;
+            this.mainActivity.drawSlave();
         }
     }
 

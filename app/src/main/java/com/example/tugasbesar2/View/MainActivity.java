@@ -30,6 +30,7 @@ import com.example.tugasbesar2.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements FragmentListener, SensorEventListener, View.OnClickListener {
     //fragment : FrontPage
@@ -71,8 +72,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     //Flag (Buat nandain enemy udah dibuat)
     protected boolean flag;
 
-    //Thread Wrapper
+    //Thread Wrapper and shot
     protected UIThreadedWrapper uiThreadedWrapper;
+    protected Shot shot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         //Presenter
         this.presenter = new Presenter(this);
         this.plane = this.presenter.getPlane();
+        this.shot = this.presenter.getShot();
 
         //front page
         this.fp = new FrontPage();
@@ -101,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.friendly_paint = new Paint();
         this.friendly_paint.setColor(getResources().getColor(R.color.white));
         this.enemy_paint = new Paint();
-        int enemy_color = ResourcesCompat.getColor(getResources(),R.color.red,null);
+        int enemy_color = ResourcesCompat.getColor(getResources(),R.color.purple,null);
         this.enemy_paint.setColor(enemy_color);
         this.shot_paint = new Paint();
         int shot_color = ResourcesCompat.getColor(getResources(),R.color.red,null);
@@ -250,9 +253,12 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     //changes drawing (update draw)
     public void drawSlave(){
         this.initiateCanvas();
-
         this.mCanvas.drawBitmap(this.a10,plane.getPosX(),plane.getPosY(),new Paint());
+        this.shoot(this.shot);
+    }
 
+    protected void shoot(Shot shot){
+        this.mCanvas.drawCircle(shot.getPosX(), shot.getPosY(), 20, this.shot_paint );
         this.imageView.invalidate();
     }
 
@@ -319,7 +325,8 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.activateGyro(); //NANTI AKAN DIGANTI OLEH BUTTON SEMENTARA DL AJA AJG
         this.initiateCanvas();
         this.initiateEnemy();
-        ThreadShots ts = new ThreadShots(uiThreadedWrapper, plane);
+
+        ThreadShots ts = new ThreadShots(uiThreadedWrapper,this.shot,this.plane);
         ts.initiate();
     }
 
@@ -359,9 +366,5 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         }
     }
 
-    protected void shoot(Shot shot){
-        initiateCanvas();
-        this.mCanvas.drawCircle(shot.getPosX(), shot.getPosY(), 20, this.shot_paint );
-        this.imageView.invalidate();
-    }
+
 }
