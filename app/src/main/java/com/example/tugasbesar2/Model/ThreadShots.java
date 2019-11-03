@@ -1,8 +1,9 @@
-package com.example.tugasbesar2.View;
+package com.example.tugasbesar2.Model;
 
 import com.example.tugasbesar2.Model.Enemy;
 import com.example.tugasbesar2.Model.Plane;
 import com.example.tugasbesar2.Model.Shot;
+import com.example.tugasbesar2.Model.ThreadShotHandler;
 
 import java.util.List;
 

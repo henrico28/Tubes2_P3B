@@ -7,4 +7,6 @@
     <string name="no_welcome">Sorry, you need internet connection to get medals!</string>
     <string name="initialPoint">Score : 0</string>
     <string name="refresh_button">Refresh</string>
+    <string name="gameover">Game Over</string>
+    <string name="restart">Restart</string>
 </resources>

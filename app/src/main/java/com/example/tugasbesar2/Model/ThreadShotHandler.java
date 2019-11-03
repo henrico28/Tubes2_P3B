@@ -1,11 +1,11 @@
-package com.example.tugasbesar2.View;
+package com.example.tugasbesar2.Model;
 
 import android.os.CountDownTimer;
 import android.os.Message;
 
 import android.os.Handler;
 
-import com.example.tugasbesar2.Model.Shot;
+import com.example.tugasbesar2.View.MainActivity;
 
 public class ThreadShotHandler extends Handler {
     protected final static int MSG_SET_OUTPUT = 0;

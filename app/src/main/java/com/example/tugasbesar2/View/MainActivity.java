@@ -26,6 +26,10 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.tugasbesar2.Model.Enemy;
 import com.example.tugasbesar2.Model.Plane;
 import com.example.tugasbesar2.Model.Shot;
+import com.example.tugasbesar2.Model.ThreadScoreDownload;
+import com.example.tugasbesar2.Model.ThreadScoreUpload;
+import com.example.tugasbesar2.Model.ThreadShotHandler;
+import com.example.tugasbesar2.Model.ThreadShots;
 import com.example.tugasbesar2.Presenter.Presenter;
 import com.example.tugasbesar2.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -76,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
     //Thread Wrapper and shot
     protected ThreadShotHandler threadShotHandler;
-    protected Shot shot;
+    public Shot shot;
 
     //Timer
     protected TextView timer;
@@ -84,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     //Points
     private int point;
     protected TextView tv_point;
+
+    //End
+    private EndDialog end;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,10 +136,10 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.tv_point = findViewById(R.id.tv_point);
         this.tv_point.setText(R.string.initialPoint);
 
-
         //Enemies
         this.enemies = new LinkedList<Enemy>();
         this.flag = false;
+
         //Jumlah Musuh
         this.enemyCounter = 10;
 
@@ -149,6 +156,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
         //Thread Wrapper
         this.threadShotHandler = new ThreadShotHandler(this);
+
+        //End
+        this.end = new EndDialog();
 
 
 
@@ -385,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
     //TIMER
     public void createTimer(){
-        new CountDownTimer(30000, 1000) {
+        new CountDownTimer(3000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 setTimer(millisUntilFinished/1000);
@@ -399,7 +409,10 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     }
 
     public void stopGame(){
-
+        this.uploadScore();
+        this.getHighSCore();
+        FragmentTransaction ft = this.fragmentManager.beginTransaction();
+        this.end.show(ft,this.point+"");
     }
 
     protected void startApp(){
@@ -416,6 +429,25 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         ThreadShots ts = new ThreadShots(threadShotHandler,this.shot,this.plane,this.enemies);
         ts.initiate();
         this.createTimer();
+    }
+
+    public void getHighSCore(){
+        ThreadScoreDownload tsd = new ThreadScoreDownload(this);
+        tsd.execute();
+    }
+
+    public void showHighScore(String s){
+        System.out.println(s);
+    }
+
+    public void uploadScore(){
+        ThreadScoreUpload tsu = new ThreadScoreUpload(this,"1",this.point+"");
+        tsu.execute();
+    }
+
+    //Setelah show High Score dipanggil
+    public void scoreUploaded(String s){
+        System.out.println(s);
     }
 
     @Override
