@@ -7,12 +7,12 @@ import android.os.Handler;
 
 import com.example.tugasbesar2.Model.Shot;
 
-public class UIThreadedWrapper extends Handler {
+public class ThreadShotHandler extends Handler {
     protected final static int MSG_SET_OUTPUT = 0;
     protected MainActivity mainActivity;
     protected CountDownTimer timer;
 
-    public UIThreadedWrapper(MainActivity mainActivity){
+    public ThreadShotHandler(MainActivity mainActivity){
         this.mainActivity = mainActivity;
     }
 
@@ -20,7 +20,7 @@ public class UIThreadedWrapper extends Handler {
 
     @Override
     public void handleMessage(Message msg){
-        if(msg.what==UIThreadedWrapper.MSG_SET_OUTPUT){
+        if(msg.what== ThreadShotHandler.MSG_SET_OUTPUT){
             Shot shot =  (Shot) msg.obj;
             this.mainActivity.shot = shot;
             this.mainActivity.drawSlave();

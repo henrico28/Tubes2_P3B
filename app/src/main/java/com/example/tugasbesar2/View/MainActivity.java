@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     protected boolean flag;
 
     //Thread Wrapper and shot
-    protected UIThreadedWrapper uiThreadedWrapper;
+    protected ThreadShotHandler threadShotHandler;
     protected Shot shot;
 
     //Timer
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.fab_right.hide();
 
         //Thread Wrapper
-        this.uiThreadedWrapper = new UIThreadedWrapper(this);
+        this.threadShotHandler = new ThreadShotHandler(this);
 
 
 
@@ -336,7 +336,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         ft.commit();
     }
 
-
     @Override
     public void onSensorChanged(SensorEvent event) {
         //reading the sensors values
@@ -363,7 +362,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         }
 
         //check the phone gyrometer (for movement)
-        if(roll > 0.35){
+        if(roll > 0.20){
             if(plane.getPosX() > 920){
                 System.out.println("max right");
             }else {
@@ -371,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
                 plane.moveRight(20);
                 this.drawSlave();
             }
-        }else if(roll < -0.35){
+        }else if(roll < -0.20){
             if(plane.getPosX() < -90){
                 System.out.println("max left");
             }else {
@@ -414,7 +413,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.initiateEnemy();
         this.initiateCanvas();
 
-        ThreadShots ts = new ThreadShots(uiThreadedWrapper,this.shot,this.plane,this.enemies);
+        ThreadShots ts = new ThreadShots(threadShotHandler,this.shot,this.plane,this.enemies);
         ts.initiate();
         this.createTimer();
     }

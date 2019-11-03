@@ -8,14 +8,14 @@ import java.util.List;
 
 public class ThreadShots implements Runnable{
     protected Thread thread;
-    protected UIThreadedWrapper uiThreadedWrapper;
+    protected ThreadShotHandler threadShotHandler;
     protected Shot shot;
     protected Plane plane;
     protected List<Enemy> enemies;
 
 
-    public ThreadShots(UIThreadedWrapper uiThreadedWrapper, Shot shot, Plane plane, List<Enemy> enemies){
-        this.uiThreadedWrapper = uiThreadedWrapper;
+    public ThreadShots(ThreadShotHandler threadShotHandler, Shot shot, Plane plane, List<Enemy> enemies){
+        this.threadShotHandler = threadShotHandler;
         this.thread = new Thread(this);
         this.shot = shot;
         this.plane = plane;
@@ -31,7 +31,7 @@ public class ThreadShots implements Runnable{
         while(true){
             if(curY > 0) {
                 //kalau peluru belum keluar map
-                curY -= 30;
+                curY -= 50;
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -56,7 +56,7 @@ public class ThreadShots implements Runnable{
 
                     }
                 }
-                this.uiThreadedWrapper.x(new Shot(curX, curY));
+                this.threadShotHandler.x(new Shot(curX, curY));
             }else{
                 //kalau peluru di reload animation
                 curX = plane.getPosX()+130;
@@ -66,7 +66,7 @@ public class ThreadShots implements Runnable{
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                this.uiThreadedWrapper.x(new Shot(curX, curY));
+                this.threadShotHandler.x(new Shot(curX, curY));
             }
         }
     }
