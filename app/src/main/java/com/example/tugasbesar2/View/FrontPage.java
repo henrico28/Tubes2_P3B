@@ -59,9 +59,15 @@ public class FrontPage extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         if(view.getId() == this.btnStart.getId() && this.blocker == false){
             //starts the game
-            this.listener.closePage();
-            MainActivity main = (MainActivity)getActivity();
-            main.startApp();
+            this.checkConnection();
+            if(this.blocker == true){
+                //selama blocker masih nyala, app ga bisa di start
+                System.out.println("ABORT!");
+            }else {
+                this.listener.closePage();
+                MainActivity main = (MainActivity) getActivity();
+                main.startApp();
+            }
         }else if(view.getId() == this.btnStart.getId() && this.blocker == true){
             //if internet is connected, can press the refresh connection button
             this.checkConnection();

@@ -395,14 +395,14 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
     //TIMER
     public void createTimer(){
-        new CountDownTimer(3000, 1000) {
+        new CountDownTimer(30000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 setTimer(millisUntilFinished/1000);
             }
 
             public void onFinish() {
-                setTimerText("TIME'S UP!");
+                setTimerText("FREEROAM!");
                 stopGame();
             }
         }.start();
