@@ -227,9 +227,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         this.mSensorManager.unregisterListener(this);
     }
 
-
-
-    //game screen (prototype)
+    //game screen
     private Bitmap a10;
     public void initiateCanvas(){
         this.isStarted = true;
@@ -406,13 +404,13 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
     }
 
     protected void startApp(){
-        //registering sensor on start fragment "FrontPage" + engage canvas (prototype)
+        //starts the app
         this.btn_mode.setVisibility(View.VISIBLE);
         this.timer.setVisibility(View.VISIBLE);
         this.tv_point.setVisibility(View.VISIBLE);
         this.tv_point.bringToFront();
         this.timer.bringToFront();
-        this.activateGyro(); //NANTI AKAN DIGANTI OLEH BUTTON SEMENTARA DL AJA AJG
+        this.activateGyro();
         this.initiateEnemy();
         this.initiateCanvas();
 

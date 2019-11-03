@@ -4,5 +4,7 @@
     <string name="modeButton">Buttons</string>
     <string name="modeGyro">Gyro</string>
     <string name="welcome">WELCOME TO PLANE SHOOTER</string>
+    <string name="no_welcome">Sorry, you need internet connection to get medals!</string>
     <string name="initialPoint">Score : 0</string>
+    <string name="refresh_button">Refresh</string>
 </resources>

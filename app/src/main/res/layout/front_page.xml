@@ -13,7 +13,8 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="@dimen/greeting"
-        android:layout_above="@+id/btn_start"/>
+        android:layout_above="@+id/btn_start"
+        android:id="@+id/greeting_text"/>
 </LinearLayout>
 
     <Button
